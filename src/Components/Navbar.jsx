@@ -1,13 +1,25 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import googlelogo from '../assets/googlelogo.png'
 import { GoogleLogin } from '@react-oauth/google'
 import { jwtDecode } from 'jwt-decode'
+import { getProfile, loginUser } from '../Redux/ApiHandler'
+import { toast } from 'react-toastify'
+import { useDispatch ,useSelector } from 'react-redux'
+import { setProfile, setAuthToken } from '../Redux/messageSlice'
 
 const Navbar = () => {
     const [openLogin, setOpenLogin] = useState(false)
     const [isLogin, setIsLogin] = useState(false)
-    const loginHandler = (event) => {
+    const [user, setUser] = useState({});
+    const dispatch = useDispatch()
+    const profile = useSelector(state => state.profile.data)
+
+    const loginHandler = async(event) => {
         event.preventDefault()
+        const data = await loginUser(user)
+        if(!data.status) return toast.warn(data.message)
+        toast.success(data.message)
+        dispatch(setProfile(data.user))
         setIsLogin(true)
         setOpenLogin(false)
     }
@@ -17,7 +29,26 @@ const Navbar = () => {
     };
     const errorMessage = (error) => {
         console.log(error);
-    };
+    }
+
+    const call = async(authToken) => {
+        const data = await getProfile(authToken)
+        if(data.status){
+            // toast.success('Autologin successfully.')
+            dispatch(setProfile(data.user))
+            setIsLogin(true)
+            setOpenLogin(false)
+        }
+    }
+
+    useEffect(() => {
+        const authToken = localStorage.getItem('authToken')
+        if(authToken){
+        call(authToken)
+        dispatch(setAuthToken(authToken))
+        }
+    }, [])
+
   return (
     <div className='navbar p-0'>
         <div className="nav-div">
@@ -34,8 +65,8 @@ const Navbar = () => {
             <i className="fa-solid fa-circle-xmark" onClick={() => setOpenLogin(false)}></i>
             <form onSubmit={(e) => loginHandler(e)}>
                 <p className='title'>Login</p>
-                <input type='email' placeholder='Email id'/>
-                <input type='password' placeholder='Password' />
+                <input type='email' placeholder='Email id' name='email' onChange={e => setUser({...user, [e.target.name] : e.target.value})}/>
+                <input type='password' placeholder='Password' name='password' onChange={e => setUser({...user, [e.target.name] : e.target.value})}/>
                 <button>Login</button>
                 <hr></hr>
                 <p className='or'>OR</p>

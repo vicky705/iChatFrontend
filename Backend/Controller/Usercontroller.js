@@ -14,10 +14,8 @@ route.post('/createuser', async(req, res) => {
         if(isUser) return res.status(400).json({status, message : "Email is already exist."})
         console.log("gen salt")
         const salt = bcrypt.genSaltSync(10)
-        console.log(salt)
         const newPass = await bcrypt.hash(data.password, salt)
         data.password = newPass
-        console.log(data)
         const user = await Usermodel.create(data)
         const userId = {
             userId : user._id

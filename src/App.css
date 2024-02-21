@@ -6,6 +6,31 @@
 p{
     margin-bottom: 0px;
 }
+::-webkit-scrollbar {
+    width: 5px; 
+  }
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px; 
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+  }
+
+.container-fluid{
+    padding: 0px;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+.navbar{
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
 .navbar .nav-div{
     width: 100%;
     display: flex;
@@ -116,3 +141,115 @@ p{
     font-size: 20px;
     font-weight: bold;
 }
+
+
+/*   Char Area   */
+.chat-area{
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+}
+.chat-area .user{
+    width: 25%;
+    background-color: #ffffff;
+    height: 100%;
+    padding: 10px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+.chat-area .chat{
+    width: 75%;
+    /* background-color: rgb(97, 190, 97); */
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background: url('https://img.freepik.com/free-photo/dark-blue-product-background_53876-92801.jpg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+.chat-area .chat .title{
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: black;
+    color: white;
+}
+.chat-area .chat .title .name{
+    font-weight: 400;
+    padding-left: 20px;
+}
+.chat-area .chat .title img{
+    width: 40px;
+    border-radius: 100%;
+}
+.chat-area .chat .chat-section{
+    height: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+.chat-area .chat .send-message form{
+    /* position: absolute; */
+    bottom: 0px;
+    width: 100%;
+    display: flex;
+    gap: 20px;
+    background-color: black;
+    padding: 10px;
+}
+.chat-area .chat .send-message input{
+    background-color: white;
+    padding: 5px 10px;
+    border: 1px solid black;
+    width: 100%;
+    border-radius: 5px;
+    color: black;
+}
+.chat-area .chat .send-message button{
+    padding: 0px 20px;
+    border-radius: 5px;
+}
+/*   /Char Area   */
+
+.user-card{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 5px;
+    border: 1px solid rgba(128, 128, 128, 0.218);
+    border-radius: 5px;
+}
+.user-card img{
+    width: 40px;
+}
+.user-card .name{
+    font-weight: 500;
+    padding-left: 10px;
+}
+
+/*   Send Message Box  */
+.send-msg, .recieve-msg{
+    padding: 5px;
+}
+.send-msg .text-box,
+.recieve-msg .text-box{
+    padding: 10px;
+    width: 60%;
+    border-radius: 10px;
+    font-weight: 400;
+}
+.send-msg .text-box{
+    background-color: #4285f4;
+    color: white;
+}
+.recieve-msg .text-box{
+    background: gray;
+    color: white;
+}
+.send-msg{
+    display: flex;
+    justify-content: right;
+    text-align: right;
+}
+/*   /Send Message Box  */

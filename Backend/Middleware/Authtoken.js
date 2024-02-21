@@ -6,8 +6,8 @@ const Authantication = async(req, res, next) => {
     try{
         const token = req.header('authToken')
         if(!token) return res.status(401).json({status, message : "Invalid Authantication."})
-        const data = await jwt.verify(token, JWT_SECRITE)
-        req.id = data._id
+        const data = jwt.verify(token, JWT_SECRITE)
+        req.id = data.userId
         next()
     }
     catch(err){
