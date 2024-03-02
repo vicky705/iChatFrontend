@@ -5,7 +5,6 @@ const route = express()
 
 route.post('/sendmessage', Authantication, async(req, res) => {
     let status = false
-    console.log(req.id)
     try{
         req.body.senderId = req.id
         const messageText = await Messagemodel.create(req.body)
@@ -36,7 +35,6 @@ route.post('/getAllMessage', Authantication, async(req, res) => {
         return res.status(200).json({status, messageList })
     }
     catch(err){
-        res.status(500).json({status, message : err.toString()})
         res.status(500).json({status, message : err.toString()})
     }
 })

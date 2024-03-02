@@ -3,7 +3,7 @@ const dburl = "mongodb+srv://vickykumar776655:6pVfrz4i8hjnTMMF@cluster0.oacj9k4.
 
 const connectToMongose = () => {
     mongoose.connect(dburl).then(() => {
-        console.log("Connected.")
+        console.log("Mongodb Connected.")
     }).catch((error) => {
         console.log(error)
     })

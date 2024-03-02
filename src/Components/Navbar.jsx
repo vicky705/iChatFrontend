@@ -39,6 +39,9 @@ const Navbar = () => {
             setIsLogin(true)
             setOpenLogin(false)
         }
+        else{
+            toast.warn("Login Failed.")
+        }
     }
 
     useEffect(() => {

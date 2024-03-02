@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useDeferredValue, useEffect, useRef, useState } from 'react'
 import Usercard from './Usercard'
 import { getAllUsers, sendMessage } from '../../Redux/ApiHandler'
 import { useDispatch, useSelector } from 'react-redux'
@@ -6,6 +6,7 @@ import { sendMessageToStore, setUsers } from '../../Redux/messageSlice'
 import Sendtext from './Messagebox/Sendtext'
 import Recievetext from './Messagebox/Recievetext'
 import {io} from 'socket.io-client'
+const socket = io('http://localhost:4000')
 
 const Chatarea = () => {
   const authToken = useSelector(state => state.authToken.data)
@@ -14,10 +15,11 @@ const Chatarea = () => {
   const messageList = useSelector(state => state.message.data)
   const selectedUser = useSelector(state => state.selectUser.data)
   const [messageText, setMessageText] = useState('')
-  const socket = useRef()
   const [onlineUser, setOnlineUser] = useState([])
   const dispatch = useDispatch()
   const chatSectionRef = useRef(null)
+  const [activeUser, setActiveUser] = useState({})
+
 
   const getAllUserHandler = async() => {
     const data = await getAllUsers(authToken)
@@ -29,6 +31,8 @@ const Chatarea = () => {
   useEffect(() => {
     getAllUserHandler()
   }, [])
+
+  
 
   const scrollToBottom = () => {
     if (chatSectionRef.current) {
@@ -43,49 +47,38 @@ const Chatarea = () => {
   }, [selectedUser])
 
   // Web socket io 
-  
 
-  
   useEffect(() => {
-    if(profile !== undefined){
-      console.log("Connecting to socket server")
-      socket.current = io('http://localhost:8800')
-      socket.current.emit('action:newUserAdd', selectedUser._id)
-      socket.current.on('action:getActiveUser', (users) => {
-        setOnlineUser(users)
-        console.log("Client Side Active User", users)
+      socket.emit('action:join', profile)
+      socket.on('action:activeUser', (info) => {
+        console.log("Connected user", info)
+        setActiveUser(info)
       })
-    }
-  }, [profile])
-
+      socket.on("action:recieveMessage", (message) => {
+        console.log("Recieved message", message)
+        dispatch(sendMessageToStore(message))
+        scrollToBottom()
+      })
+  }, [])
   
 
-  useEffect(() => {
-    socket.current.on('action:messageRecieve', async(data) => {
-      if(data.message.recieverId === profile._id){
-        const val = await data.message
-        dispatch(sendMessageToStore(val))
-        console.log("Message Recived", val)
-        scrollToBottom()
-      }
-    })
-  }, [])
+  const sendMessageToSocket = (msg) => {
+    socket.emit("action:sendMessage", msg)
+  }
 
 
   const onSumbitMessageHandeler = async(event) => {
     event.preventDefault()
-    const response = await sendMessage(authToken, {recieverId : selectedUser._id, message : messageText})
-    if(response.status){
-      dispatch(sendMessageToStore(response.text))
-      scrollToBottom()
+    if(messageText.trim().length > 0){
+      const response = await sendMessage(authToken, {recieverId : selectedUser._id, message : messageText})
+      if(response.status){
+        dispatch(sendMessageToStore(response.text))
+        scrollToBottom()
+        sendMessageToSocket(response.text)
+      }
+      setMessageText('')
     }
-    setMessageText('')
-    const rId = onlineUser.find((item) => item.userId === selectedUser._id)
-    console.log()
-    socket.current.emit('action:sendMessage', {message : response.text, reciverSocketId : rId.socketId})
   }
-
-
 
   return (
     <div className='chat-area'>
@@ -93,7 +86,7 @@ const Chatarea = () => {
         {
           users.map((item) => {
             return (
-              profile._id !== item._id && <Usercard key={item._id} data={item}/>
+              profile._id !== item._id && <Usercard key={item._id} data={item} isActive={activeUser[item._id] ? true : false}/>
             )
           })
         }
@@ -101,13 +94,16 @@ const Chatarea = () => {
       <div className="chat">
         {selectedUser.email && <div className='title'>
           <img src='https://www.nicepng.com/png/detail/856-8561250_profile-pic-circle-girl.png' />
-          <p className='name'>{selectedUser.email}</p>
+          <p className='name'>
+            <div>{selectedUser.email}</div>
+            <div style={{color: "#00b81f"}}> {activeUser[selectedUser._id] ? "Online" : ""}</div>
+          </p>
         </div>}
         <div className='chat-section' ref={chatSectionRef}>
           { 
             messageList.map((item) => {
               return (
-                item.senderId === profile._id ? <Sendtext key={item._id} data={item} /> : <Recievetext key={item._id} data={item} />
+                item.senderId === profile._id ? <Sendtext key={item._id} data={item}/> : <Recievetext key={item._id} data={item} />
               )
             })
           }
