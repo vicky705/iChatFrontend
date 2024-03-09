@@ -15,6 +15,19 @@ import Usercard from './Components/Chatarea/Usercard'
 
 function App() {
   const profile = useSelector(state => state.profile.data)
+  const [isProfileOpen, setIsProfileOpen] = useState(false)
+  const [isLeft, setIsLeft] = useState(true)
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsLeft(window.innerWidth > 668)
+    }
+
+    handleResize() // Call it initially
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
   return (
     <>
       <div className="container-fluid">
@@ -28,10 +41,10 @@ function App() {
           pauseOnFocusLoss
           draggable
           pauseOnHover
-          theme="dark"
-          /><ToastContainer />
-        <Navbar />
-        {profile.name && <Chatarea />}
+          theme='light'
+        />
+        <Navbar isProfileOpen={isProfileOpen} setIsProfileOpen={setIsProfileOpen} isLeft={isLeft} setIsLeft={setIsLeft}/>
+        {profile.name && <Chatarea isProfileOpen={isProfileOpen} setIsProfileOpen={setIsProfileOpen} isLeft={isLeft}/>}
       </div>
     </>
   )

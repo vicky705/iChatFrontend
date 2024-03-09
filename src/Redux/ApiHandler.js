@@ -3,6 +3,24 @@ import React from "react"
 const BASE_URL = "http://localhost:4000"
 
 
+
+export const registerUser = async(info) => {
+    const response = await fetch(`${BASE_URL}/api/auth/createuser`, {
+        method : "post",
+        headers : {
+            "Content-Type" : "application/json"
+        },
+        body : JSON.stringify(info)
+    })   
+    
+    const data =  await response.json()
+    if(data.status){
+        localStorage.setItem('authToken', data.authToken)
+    }
+    return data
+}
+
+
 export const loginUser = async(user) => {
     const response = await fetch(`${BASE_URL}/api/auth/login`, {
         method : "post",
@@ -57,13 +75,16 @@ export const getAllMessage = async(authToken, id) => {
 }
 
 export const sendMessage = async(authToken, msg) => {
+    const formData = new FormData()
+    formData.append('recieverId', msg.recieverId)
+    formData.append('message', msg.message)
+    formData.append('file', msg.file)
     const response = await fetch(`${BASE_URL}/api/message/sendmessage`, {
         method : "POST",
         headers : {
-            "Content-Type" : "application/json",
             'authToken' : authToken
         },
-        body : JSON.stringify(msg)
+        body : formData,
     })
     return await response.json()
 }

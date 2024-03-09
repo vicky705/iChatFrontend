@@ -9,7 +9,8 @@ const initialState = {
     },
     users : {
         data : [],
-        isLoading : true
+        isLoading : true,
+        userList : []
     },
     message : {
         data : [],
@@ -32,6 +33,7 @@ export const messageSlice = createSlice({
         },
         setUsers : (state, action) => {
             state.users.data = action.payload
+            state.users.userList = action.payload
         },
         setMessage : (state, action) => {
             state.message.data = action.payload
@@ -41,10 +43,13 @@ export const messageSlice = createSlice({
         },
         sendMessageToStore : (state, action) => {
             state.message.data.push(action.payload)
-        } 
+        },
+        searchUser : (state, action) => {
+            state.users.userList = state.users.data.filter((item) => item.name.toLowerCase().includes(action.payload.toLowerCase()))
+        }
     }
 })
 
-export const { setProfile, setAuthToken, setUsers, setMessage, selectUsers, sendMessageToStore } = messageSlice.actions
+export const { setProfile, setAuthToken, setUsers, setMessage, selectUsers, sendMessageToStore, searchUser } = messageSlice.actions
 
 export default messageSlice.reducer
