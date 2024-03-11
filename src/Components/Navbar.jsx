@@ -17,15 +17,10 @@ const Navbar = ({isProfileOpen, setIsProfileOpen, isLeft, setIsLeft}) => {
     const [registerInfo, setRegisterInfo] = useState({
         "name" : "",
         "email" : "",
-        "password" : ""
+        "password" : "",
+        "profile" : ""
     })
     const [rePassword, setRePassword] = useState('')
-    const [regBtn, setRegBtn] = useState(true)
-    const [otp, setOtp] = useState({
-        sendOtp : '',
-        enteredOtp : ''
-    })
-    const [isSendOtp, setIsOtpSend] = useState(false)
 
     const loginHandler = async(event) => {
         event.preventDefault()
@@ -38,12 +33,19 @@ const Navbar = ({isProfileOpen, setIsProfileOpen, isLeft, setIsLeft}) => {
         toast.success(data.message)
     }
     const responseMessage = async(response) => {
-        const data = jwtDecode(response.credential)
-        setRegisterInfo({...registerInfo, 
-            name : data.name,
-            email : data.email,
-            password : Math.random()*100,
-            profile : data.picture
+        const data = await jwtDecode(response.credential)
+        console.log(data)
+        // setRegisterInfo({...registerInfo, 
+        //     name : data.name,
+        //     email : data.email,
+        //     password : Math.random()*100,
+        //     profile : data.picture
+        // })
+        setRegisterInfo((prev) => {
+            prev.name = data.name
+            prev.email = data.email
+            prev.password = Math.random()*100
+            prev.profile = data.picture
         })
         registrationOAuthHandler()
     };
@@ -87,8 +89,13 @@ const Navbar = ({isProfileOpen, setIsProfileOpen, isLeft, setIsLeft}) => {
         // dispatch(setAuthToken(response.authToken))
         // setIsLogin(true)
         // closeAllHandler()
-        // setRegisterInfo({})
         // setRePassword('')
+        // setRegisterInfo({
+        //     "name" : "",
+        //     "email" : "",
+        //     "password" : "",
+        //     "profile" : ""
+        // })
     }
 
     const openLoginHandler = () => {
@@ -136,7 +143,7 @@ const Navbar = ({isProfileOpen, setIsProfileOpen, isLeft, setIsLeft}) => {
         <div className="nav-div">
             <div className="logo">
                 <i class="fa-solid fa-bars" onClick={() => setIsLeft(!isLeft)}></i>
-                <p className='text-light'><span></span>Chat</p>
+                <p className='text-light'><span>Chat</span>Wing</p>
             </div>
             <div className="login">
                 <button className={isLogin ? 'd-none' : ''} onClick={() => openLoginHandler()}>Login</button>
