@@ -1,7 +1,7 @@
 import React from "react"
 
 // const BASE_URL = "http://localhost:4000"
-const BASE_URL = "https://ichatbackend-jvya.onrender.com/"
+const BASE_URL = "https://ichatbackend-jvya.onrender.com"
 
 
 
