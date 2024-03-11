@@ -10,7 +10,8 @@ import Welcome from './Welcome'
 import Fileselctor from './Fileselctor'
 import Sendfile from './Messagebox/Sendfile'
 import Recieverfile from './Messagebox/Recieverfile'
-const socket = io('http://localhost:4000')
+// const socket = io('http://localhost:4000')
+const socket = io('https://ichatbackend-jvya.onrender.com/')
 
 const Chatarea = ({isProfileOpen, setIsProfileOpen, isLeft}) => {
   const authToken = useSelector(state => state.authToken.data)
