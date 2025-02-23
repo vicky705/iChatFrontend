@@ -24,7 +24,7 @@ p{
     padding: 0px;
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    height: 100dvh;
 }
 .navbar{
     position: sticky;
@@ -243,7 +243,7 @@ p{
 .chat-area .user .user-list{
     height: 100%;
     overflow-x: hidden;
-    overflow-y: scroll;
+    overflow-y: auto;
     padding-right: 10px;
 }
 .chat-area .chat{
@@ -274,7 +274,7 @@ p{
 }
 .chat-area .chat .chat-section{
     height: 100%;
-    overflow-y: scroll;
+    overflow-y: auto;
     overflow-x: hidden;
 }
 .chat-area .chat .send-message form{
